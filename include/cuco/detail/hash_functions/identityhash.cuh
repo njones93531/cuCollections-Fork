@@ -51,8 +51,14 @@ struct IdentityHash_32 {
    */
   constexpr result_type __host__ __device__ operator()(Key const& key) const noexcept
   {
-    return compute_hash(reinterpret_cast<std::byte const*>(&key),
-                        cuco::extent<std::size_t, sizeof(Key)>{});
+    if constexpr (sizeof(Key) <= 16) {
+      Key const key_copy = key;
+      return compute_hash(reinterpret_cast<std::byte const*>(&key_copy),
+                          cuco::extent<std::size_t, sizeof(Key)>{});
+    } else {
+      return compute_hash(reinterpret_cast<std::byte const*>(&Key),
+                          cuco::extent<std::size_t, sizeof(Key)>{});
+    }
   }
 
   /**
@@ -103,8 +109,14 @@ struct IdentityHash_64 {
    */
   constexpr result_type __host__ __device__ operator()(Key const& key) const noexcept
   {
-    return compute_hash(reinterpret_cast<std::byte const*>(&key),
-                        cuco::extent<std::size_t, sizeof(Key)>{});
+    if constexpr (sizeof(Key) <= 16) {
+      Key const key_copy = key;
+      return compute_hash(reinterpret_cast<std::byte const*>(&key_copy),
+                          cuco::extent<std::size_t, sizeof(Key)>{});
+    } else {
+      return compute_hash(reinterpret_cast<std::byte const*>(&Key),
+                          cuco::extent<std::size_t, sizeof(Key)>{});
+    }
   }
 
   /**
