@@ -56,7 +56,7 @@ struct IdentityHash_32 {
       return compute_hash(reinterpret_cast<std::byte const*>(&key_copy),
                           cuco::extent<std::size_t, sizeof(Key)>{});
     } else {
-      return compute_hash(reinterpret_cast<std::byte const*>(&Key),
+      return compute_hash(reinterpret_cast<std::byte const*>(&key),
                           cuco::extent<std::size_t, sizeof(Key)>{});
     }
   }
@@ -114,7 +114,7 @@ struct IdentityHash_64 {
       return compute_hash(reinterpret_cast<std::byte const*>(&key_copy),
                           cuco::extent<std::size_t, sizeof(Key)>{});
     } else {
-      return compute_hash(reinterpret_cast<std::byte const*>(&Key),
+      return compute_hash(reinterpret_cast<std::byte const*>(&key),
                           cuco::extent<std::size_t, sizeof(Key)>{});
     }
   }
