@@ -74,18 +74,8 @@ struct IdentityHash_32 {
   constexpr result_type __host__ __device__ compute_hash(std::byte const* bytes,
                                                          Extent size) const noexcept
   {
-    std::uint32_t h1;
-    if (size >= sizeof(uint32_t)) {
-      size_t offset = size - sizeof(uint32_t);
-      h1            = load_chunk<std::uint32_t>(bytes, offset);
-    } else {
-      uint8_t shift = size * sizeof(std::byte);
-      uint32_t mask = 1ull << shift / 2;
-      mask <<= shift / 2 + shift % 2;
-      h1 = std::to_integer<std::uint32_t>(bytes[0]) & mask;
-    }
-
-    return h1 ^ seed_;
+    std::uint32_t h1 = load_chunk<std::uint32_t>(bytes, 0);
+    return h1;
   }
 
  private:
@@ -141,19 +131,10 @@ struct IdentityHash_64 {
   template <typename Extent>
   constexpr result_type __host__ __device__ compute_hash(std::byte const* bytes,
                                                          Extent size) const noexcept
-  {
-    std::uint64_t h1 = 0;
-    if (size >= sizeof(uint64_t)) {
-      size_t offset = size - sizeof(uint64_t);
-      h1            = load_chunk<std::uint64_t>(bytes, 0);
-    } else {
-      uint8_t shift = size * sizeof(std::byte) - 1;
-      uint64_t mask = 1ull << shift / 2;
-      mask <<= shift / 2 + shift % 2;
-      h1 = std::to_integer<std::uint64_t>(bytes[0]) & mask;
-    }
 
-    return h1 ^ seed_;
+  {
+    std::uint64_t h1 = load_chunk<std::uint64_t>(bytes, 0);
+    return h1;
   }
 
  private:
