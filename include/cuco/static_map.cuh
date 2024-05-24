@@ -90,8 +90,8 @@ template <class Key,
           class Extent             = cuco::extent<std::size_t>,
           cuda::thread_scope Scope = cuda::thread_scope_device,
           class KeyEqual           = thrust::equal_to<Key>,
-          class ProbingScheme      = cuco::linear_probing<4,  // CG size
-                                                     cuco::default_hash_function<Key>>,
+          class ProbingScheme      = cuco::default_probing_scheme<4,  // CG size
+                                                             cuco::default_hash_function<Key>>,
           class Allocator          = cuco::cuda_allocator<cuco::pair<Key, T>>,
           class Storage            = cuco::storage<1>>
 class static_map {

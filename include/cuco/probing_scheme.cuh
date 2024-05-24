@@ -175,6 +175,14 @@ class double_hashing : private detail::probing_scheme_base<CGSize> {
   Hash2 hash2_;
 };
 
+/**
+ * @brief Default probing scheme.
+ *
+ * @tparam Key The type of the values to hash
+ */
+template <int32_t CGSize, typename Hash>
+using default_probing_scheme = cuco::linear_probing<CGSize, Hash>;
+
 }  // namespace cuco
 
 #include <cuco/detail/probing_scheme_impl.inl>

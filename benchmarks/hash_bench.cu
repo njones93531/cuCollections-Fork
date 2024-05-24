@@ -93,6 +93,12 @@ NVBENCH_BENCH_TYPES(
                                        cuco::xxhash_64<nvbench::int32_t>,
                                        cuco::xxhash_64<nvbench::int64_t>,
                                        cuco::xxhash_64<large_key<32>>,
+                                       cuco::identityhash_32<nvbench::int32_t>,
+                                       cuco::identityhash_32<nvbench::int64_t>,
+                                       cuco::identityhash_32<large_key<32>>,
+                                       cuco::identityhash_64<nvbench::int32_t>,
+                                       cuco::identityhash_64<nvbench::int64_t>,
+                                       cuco::identityhash_64<large_key<32>>,
                                        cuco::murmurhash3_fmix_32<nvbench::int32_t>,
                                        cuco::murmurhash3_fmix_64<nvbench::int64_t>>))
   .set_name("hash_function_eval")

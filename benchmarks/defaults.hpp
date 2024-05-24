@@ -44,3 +44,11 @@ auto const MATCHING_RATE_RANGE = nvbench::range(0.1, 1., 0.1);
 auto const SKEW_RANGE          = nvbench::range(0.1, 1., 0.1);
 
 }  // namespace cuco::benchmark::defaults
+
+// #include <cuco/hash_functions.cuh>
+// namespace cuco {
+
+// template <typename Key>
+// using default_hash_function = identityhash_32<Key>;
+
+//}  // namespace cuco
