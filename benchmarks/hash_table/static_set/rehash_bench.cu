@@ -30,11 +30,13 @@
 template <typename Key, typename Dist>
 void static_set_rehash(nvbench::state& state, nvbench::type_list<Key, Dist>)
 {
-  std::size_t const capacity = state.get_int64_or_default("Capacity", cuco::benchmark::defaults::N);
+  std::size_t const capacity = state.get_int64_or_default("Size", cuco::benchmark::defaults::SIZE);
+  // auto const num_keys      = state.get_int64_or_default("NumInputs", defaults::N);
   auto const occupancy =
     state.get_float64_or_default("Occupancy", cuco::benchmark::defaults::OCCUPANCY);
 
   std::size_t const num_keys = capacity * occupancy;
+  // std::size_t const capacity = num_keys / occupancy;
 
   thrust::device_vector<Key> keys(num_keys);  // slots per second
 
