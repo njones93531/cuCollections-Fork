@@ -18,6 +18,7 @@
 
 #include <cuco/detail/hash_functions/identityhash.cuh>
 #include <cuco/detail/hash_functions/murmurhash3.cuh>
+#include <cuco/detail/hash_functions/sigbithash.cuh>
 #include <cuco/detail/hash_functions/xxhash.cuh>
 
 namespace cuco {
