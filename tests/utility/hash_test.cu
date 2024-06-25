@@ -48,6 +48,77 @@ __host__ __device__ bool check_hash_result(typename Hash::argument_type const& k
   return (h(key) == expected);
 }
 
+// Overload for hash functions without a seed
+template <typename Hash>
+__host__ __device__ bool check_hash_result(typename Hash::argument_type const& key,
+                                           typename Hash::result_type expected) noexcept
+{
+  Hash h;
+  return (h(key) == expected);
+}
+
+template <typename OutputIter>
+__global__ void check_identity_hash_result_kernel(OutputIter result)
+{
+  int i = 0;
+
+  result[i++] = check_hash_result<cuco::identity_hash<signed char>>(
+    std::numeric_limits<signed char>::min(), std::numeric_limits<signed char>::min());
+  result[i++] = check_hash_result<cuco::identity_hash<signed char>>(
+    std::numeric_limits<signed char>::max(), std::numeric_limits<signed char>::max());
+
+  result[i++] = check_hash_result<cuco::identity_hash<int32_t>>(
+    std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::min());
+  result[i++] = check_hash_result<cuco::identity_hash<int32_t>>(
+    std::numeric_limits<int32_t>::max(), std::numeric_limits<int32_t>::max());
+
+  result[i++] = check_hash_result<cuco::identity_hash<int64_t>>(
+    std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::min());
+  result[i++] = check_hash_result<cuco::identity_hash<int64_t>>(
+    std::numeric_limits<int64_t>::max(), std::numeric_limits<int64_t>::max());
+
+#if defined(CUCO_HAS_INT128)
+  result[i++] = check_hash_result<cuco::identity_hash<__int128>>(
+    (__int128)std::numeric_limits<int64_t>::max() + 1,
+    (__int128)std::numeric_limits<int64_t>::max() + 1);
+#endif
+}
+
+TEST_CASE("Test cuco::identity_hash", "")
+{
+  SECTION("Check if host-generated hash values match the identity function.")
+  {
+    CHECK(check_hash_result<cuco::identity_hash<signed char>>(
+      std::numeric_limits<signed char>::min(), std::numeric_limits<signed char>::min()));
+    CHECK(check_hash_result<cuco::identity_hash<signed char>>(
+      std::numeric_limits<signed char>::max(), std::numeric_limits<signed char>::max()));
+
+    CHECK(check_hash_result<cuco::identity_hash<int32_t>>(std::numeric_limits<int32_t>::min(),
+                                                          std::numeric_limits<int32_t>::min()));
+    CHECK(check_hash_result<cuco::identity_hash<int32_t>>(std::numeric_limits<int32_t>::max(),
+                                                          std::numeric_limits<int32_t>::max()));
+
+    CHECK(check_hash_result<cuco::identity_hash<int64_t>>(std::numeric_limits<int64_t>::min(),
+                                                          std::numeric_limits<int64_t>::min()));
+    CHECK(check_hash_result<cuco::identity_hash<int64_t>>(std::numeric_limits<int64_t>::max(),
+                                                          std::numeric_limits<int64_t>::max()));
+
+#if defined(CUCO_HAS_INT128)
+    CHECK(check_hash_result<cuco::identity_hash<__int128>>(
+      (__int128)std::numeric_limits<int64_t>::max() + 1,
+      (__int128)std::numeric_limits<int64_t>::max() + 1));
+#endif
+  }
+  SECTION("Check if device-generated hash values match the identity function.")
+  {
+    thrust::device_vector<bool> result(7, true);
+
+    check_identity_hash_result_kernel<<<1, 1>>>(result.begin());
+
+    CHECK(cuco::test::all_of(result.begin(), result.end(), [] __device__(bool v) { return v; }));
+  }
+}
+
 template <typename OutputIter>
 __global__ void check_hash_result_kernel_64(OutputIter result)
 {
